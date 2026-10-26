@@ -29,9 +29,14 @@ El ejecutable resultante interactúa directamente con la GPU a través de OpenGL
 ### 🛡️ 1. Corrección de Cuelgues Críticos de Emulación (Balkan Church / Puente)
 - **Eliminación de Softlocks:** En la emulación tradicional con PGXP activado, *Silent Hill* sufre cuelgues irreversibles con audio en bucle en transiciones clave (dentro de la **Iglesia Balkan** tras las cinemáticas de Dahlia, al cruzar el **puente levadizo** o en el **tiovivo del parque de atracciones**). En este port el pipeline de geometría se ha estabilizado por completo, permitiendo completar el juego de principio a fin sin bloqueos ni costuras blancas en texturas.
 
-### 🌫️ 2. Niebla Volumétrica y Linterna OLED Atmosférica
-- **Preservación del Difuminado Original:** Se elimina el ruido artificial y las rejillas de dithering que producían los filtros de realce 2D sobre la niebla en 4K.
-- **Shader OLED de Terror Psicológico:** Canal de postprocesamiento diseñado para pantallas modernas y paneles OLED: negros puros y profundos en la oscuridad, haz de linterna contrastado y paleta cromática oxidada y tétrica fiel al Otherworld original.
+### 🌫️ 2. Motor Gráfico Modernizado (Remaster Visual)
+- **Súper-Muestreo Interno 8K (SSAA 2.0x) + FXAA HQ:** El motor rasteriza internamente a **7680x4320 (8K)** y reduce la imagen a 4K mediante promediado de área ponderada junto con FXAA de alta calidad. Erradica por completo el parpadeo subpíxel y los dientes de sierra en postes, cables y vallas a través de la niebla.
+- **AMD FidelityFX CAS (Contrast-Adaptive Sharpening):** Algoritmo de nitidez adaptativa que rescata los micro-detalles en el cuero de la chaqueta de Harry, asfalto roto, óxido, maderas y sangre sin generar bordes dobles ni halos blancos.
+- **Mapeo de Tono Fílmico ACES (*ACES Filmic Tone Mapping*):** Curva de rango dinámico cinematográfico estándar de Hollywood. El haz de la linterna ya no "quema" los blancos de forma plana; ahora cuenta con una transición volumétrica suave y natural entre el foco brillante y la penumbra.
+- **Bloom Volumétrico Atmosférico (`bloom = 0.35`):** La luz de la linterna y los faros de los coches se dispersan suavemente sobre la niebla, aportando profundidad ambiental similar a los survival horror contemporáneos.
+- **Micro-grano Fotográfico 35mm:** Textura analógica sutil que elimina las bandas de color (*color banding*) en la oscuridad y niebla, recreando el grano de celuloide de cine clásico.
+- **Corrección Total de Costuras de Textura (*Seam Bleeding*):** Eliminación completa de las líneas finas en las intros (logos de Konami, Team Silent, avisos de violencia) y en las baldosas/asfalto del suelo.
+- **Soporte para Texturas HD mediante IA (Waifu2x / DuckStation):** Compatible de forma nativa con paquetes de texturas HD comunitarios en `mods/texture-packs/SLES-01514/replacements` y script de reescalado neuronal con Waifu2x.
 
 ### 🗺️ 3. Inventario, Notas y Mapa 100% Alineados
 - **Interfaz Cohesionada:** Se ha desactivado el anclaje heurístico por tercios (`auto_ui_squash`), evitando que el mapa que dibuja Harry, las descripciones de objetos, el menú de inventario y los cuadros de diálogo se separen o queden estirados en los bordes.
