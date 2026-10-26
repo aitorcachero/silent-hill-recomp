@@ -70,6 +70,8 @@ aspect_ratio = "16:9"
 post_shader = "shaders/hd2d.pfx"
 
 [widescreen]
+offer = true
+offer_ultrawide = true
 gte_game_mode = true
 native_wide = false
 full_2d = false

@@ -6,7 +6,7 @@
 [![Platform](https://img.shields.io/badge/Plataforma-Windows%20x64%20Nativo-blue.svg?style=for-the-badge&logo=windows)](https://github.com)
 [![Resolution](https://img.shields.io/badge/Resoluci%C3%B3n-4K%20UHD%20(3840x2160)-brightgreen.svg?style=for-the-badge)](https://github.com)
 [![Framerate](https://img.shields.io/badge/Refresco-60%20%2F%20120%20%2F%20144%20FPS-orange.svg?style=for-the-badge)](https://github.com)
-[![Aspect Ratio](https://img.shields.io/badge/Modos-16%3A9%20Full--Screen%20%26%204%3A3%20UHD-purple.svg?style=for-the-badge)](https://github.com)
+[![Aspect Ratio](https://img.shields.io/badge/Modos-21%3A9%20Ultrawide%20%7C%2016%3A9%20%7C%204%3A3-purple.svg?style=for-the-badge)](https://github.com)
 [![Stability](https://img.shields.io/badge/Estabilidad-Sin%20Cuelgues%20(Iglesia%2FPuente)-success.svg?style=for-the-badge)](https://github.com)
 [![License](https://img.shields.io/badge/Licencia-MIT-lightgrey.svg?style=for-the-badge)](LICENSE)
 
@@ -45,7 +45,8 @@ El ejecutable resultante interactúa directamente con la GPU a través de OpenGL
 
 | Modo | Lanzador | Descripción |
 |---|---|---|
-| **16:9 Panorámico Pantalla Completa** | `SilentHill.exe`<br>`JUGAR_SILENT_HILL.bat` | Llena el **100% de la pantalla** sin bandas negras laterales. Las cinemáticas FMV en vídeo (intro, Cheryl en el callejón) conservan automáticamente la proporción original 4:3 para no deformarse. |
+| **21:9 Ultra-Panorámico (Ultrawide)** | `JUGAR_SILENT_HILL_21_9_ULTRAWIDE.bat`<br>`SilentHill.exe` *(Auto-detect)* | Visión cinemática ultra-ancha para monitores Ultrawide (2560x1080 / 3440x1440 / 5120x2160). La proyección 3D del mundo y la niebla se expanden al 100% llenando la pantalla sin bordes. Las cinemáticas y menús 2D se protegen automáticamente para no deformarse. |
+| **16:9 Panorámico Pantalla Completa** | `SilentHill.exe`<br>`JUGAR_SILENT_HILL.bat` | Llena el **100% de la pantalla** estándar sin bandas negras laterales. Las cinemáticas FMV en vídeo (intro, Cheryl en el callejón) conservan automáticamente la proporción original 4:3 para no deformarse. |
 | **4:3 UHD Puro Pixel-Perfect** | `JUGAR_SILENT_HILL_4K_43.bat` | Proporción clásica 4:3 en resolución nativa **4K UHD (2160p)**. Cero pop-in lateral en las esquinas de la cámara fija y niebla perfectamente delimitada. |
 
 ### 🔇 5. Lanzador Nativo Silencioso (`.exe`)
