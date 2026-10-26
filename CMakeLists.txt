@@ -30,7 +30,18 @@ psxrecomp_add_game_runtime(psx-runtime
     CODEGEN_SETUP_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/codegen_setup.c"
 )
 
-foreach(_PSX_RUNTIME_CONFIG game.toml game_options.toml)
+psxrecomp_add_game_runtime(psx-runtime-usa
+    PRELOADED_MODS_DIR "${PSX_PRELOADED_MODS}"
+    EXE_NAME "Silent_Hill_Recompiled_USA"
+    WINDOW_TITLE "Silent Hill Recompiled (USA)"
+    DEFAULT_GAME_CONFIG_PATH "game_usa.toml"
+    MAX_PLAYERS 1
+    APP_ICON "${PSXRECOMP_ROOT}/assets/psxrecomp.ico"
+    GEN_MARKER "generated_usa/SLUS_007.07_dispatch.c"
+    GEN_FULL_GLOB "generated_usa/SLUS_007.07_full_*.c"
+)
+
+foreach(_PSX_RUNTIME_CONFIG game.toml game_options.toml game_usa.toml)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${_PSX_RUNTIME_CONFIG}")
         add_custom_command(TARGET psx-runtime POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different

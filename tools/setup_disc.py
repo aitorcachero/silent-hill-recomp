@@ -162,6 +162,19 @@ def update_configs(project_root: Path, cue_path: Path, serial: str, version_info
     region = version_info.get("region", "PAL")
     is_pal = region == "PAL"
     
+    # Escribir disc.cfg
+    for d in [project_root, project_root / "build-release"]:
+        if d.exists():
+            (d / "disc.cfg").write_text(cue_forward + "\n", encoding="utf-8")
+            
+    # Actualizar settings.toml
+    for d in [project_root, project_root / "build-release"]:
+        st = d / "settings.toml"
+        if st.exists():
+            txt = st.read_text(encoding="utf-8")
+            txt = re.sub(r'path\s*=\s*"[^"]*"', f'path = "{cue_forward}"', txt)
+            st.write_text(txt, encoding="utf-8")
+
     cfg_file = project_root / "pc_port" / "config.cfg"
     if cfg_file.exists():
         text = cfg_file.read_text(encoding="utf-8", errors="replace")

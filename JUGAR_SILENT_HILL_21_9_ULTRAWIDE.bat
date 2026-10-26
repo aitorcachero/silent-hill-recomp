@@ -28,13 +28,22 @@ if exist "silent-hill-recomp\SilentHill.exe" (
     start "" "SilentHill.exe" -21:9
     exit /b
 )
-if exist "Silent_Hill_Recompiled.exe" (
-    start "" "Silent_Hill_Recompiled.exe"
-) else if exist "build-release\Silent_Hill_Recompiled.exe" (
+
+:: Deteccion de variante por archivos de disco
+set TARGET_EXE=Silent_Hill_Recompiled.exe
+if exist "Silent Hill (USA).cue" set TARGET_EXE=Silent_Hill_Recompiled_USA.exe
+if exist "Silent Hill (USA).bin" set TARGET_EXE=Silent_Hill_Recompiled_USA.exe
+if exist "disc\SLUS_007.07" set TARGET_EXE=Silent_Hill_Recompiled_USA.exe
+if exist "build-release\disc\SLUS_007.07" set TARGET_EXE=Silent_Hill_Recompiled_USA.exe
+if exist "silent-hill-recomp\disc\SLUS_007.07" set TARGET_EXE=Silent_Hill_Recompiled_USA.exe
+
+if exist "%TARGET_EXE%" (
+    start "" "%TARGET_EXE%"
+) else if exist "build-release\%TARGET_EXE%" (
     cd /d "%~dp0build-release"
-    start "" "Silent_Hill_Recompiled.exe"
-) else if exist "silent-hill-recomp\build-release\Silent_Hill_Recompiled.exe" (
+    start "" "%TARGET_EXE%"
+) else if exist "silent-hill-recomp\build-release\%TARGET_EXE%" (
     cd /d "%~dp0silent-hill-recomp\build-release"
-    start "" "Silent_Hill_Recompiled.exe"
+    start "" "%TARGET_EXE%"
 )
 exit /b

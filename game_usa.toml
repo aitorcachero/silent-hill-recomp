@@ -1,0 +1,91 @@
+[game]
+name = "SilentHill"
+id = "SLUS-00707"
+players = 1
+exe = "disc/SLUS_007.07"
+disc = "disc/SilentHill_USA.cue"
+load_address = "0x80010000"
+entry_pc = "0x80012F7C"
+text_size = "0x00013000"
+stack_base = "0x801FFFF0"
+
+[prepare_disc]
+out_dir = "disc"
+bin_name = "Silent Hill (USA).bin"
+cue_name = "Silent Hill (USA).cue"
+boot_exe = "SLUS_007.07"
+known_sizes = [616496832, 616494480]
+known_md5 = [
+  "aabaaa122e15d9363520dc4460ff9e9c",
+  "b52500eea7d7d04a6a81b0efe88955e1",
+]
+known_sha1 = [
+  "23c5409a7f27187ba797d9d764192231488a2c73",
+  "34278d31d9b9b12b3b5db5e45bcbe548991ecbc7",
+]
+
+[recompiler]
+seeds = "seeds/ghidra_funcs_usa.txt"
+out_dir = "generated_usa"
+out_stem = "SLUS_007.07"
+strict = true
+
+[runtime]
+window_title = "Silent Hill Recompiled (USA / Doblaje Castellano 4K 60FPS)"
+memcard_dir = "saves"
+overlay_cache = true
+
+[video]
+renderer = "opengl"
+internal_resolution = "4k"
+supersample = 2.0
+resolution_reference_lines = 240
+match_display_max_lines = 2160
+antialiasing_mode = "fxaa_hq"
+texture_filtering = "nearest"
+texture_lod = "off"
+anisotropic_filtering = 1
+bloom = 0.35
+geometry_correction = false
+perspective_texturing = false
+pgxp_cpu_mode = false
+pgxp_preserve_projection = false
+dithering = "fine"
+accurate_blending = true
+fmv_chroma_smoothing = true
+fmv_filter = "bicubic"
+render_thread = true
+present_thread = true
+vsync = "off"
+frame_interpolation = false
+frame_interpolation_fps = 0
+offer_frame_interpolation = false
+frame_generation = false
+frame_generation_method = "redraw"
+aspect_ratio = "16:9"
+post_shader = "shaders/hd2d.pfx"
+
+[widescreen]
+offer = true
+offer_ultrawide = true
+gte_game_mode = true
+native_wide = false
+full_2d = false
+auto_ui_squash = false
+hud_sprt_squash = false
+
+[audio]
+buffer_ms = 60
+spu_hq = true
+
+[controller]
+default_mode = "analog"
+multitap_analog = true
+multitap = true
+analog_deadzone = 3276
+analog_response = "linear"
+
+[netplay]
+required_disc_fps = [
+  "d824306a5dcd60639ee59dc6551652acf944fe365825c662f4586d0176293e08",
+]
