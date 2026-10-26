@@ -30,6 +30,7 @@ set PSX_WS_FORCE_3D=1
 set PSX_WS_FORCE_2D=0
 set PSX_ASPECT_RATIO=16:9
 set PSX_INTERNAL_SCALE=8
+set PSX_TEXTURE_FILTER=0
 if exist "Silent_Hill_Recompiled.exe" (
     start "" "Silent_Hill_Recompiled.exe"
 ) else if exist "build-release\Silent_Hill_Recompiled.exe" (
