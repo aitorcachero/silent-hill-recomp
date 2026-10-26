@@ -1,0 +1,48 @@
+# psxrecomp user settings - written by the launcher. Safe to hand-edit.
+# Overrides the bundled game.toml; the command line overrides this file.
+
+[video]
+renderer          = "opengl"
+window_width      = 1920
+fast_boot         = false
+bios_hle          = true
+fullscreen        = 0
+render_thread     = true
+present_thread    = true
+frame_generation  = false
+vsync             = "off"
+frame_interpolation = false
+frame_interpolation_fps = 0
+aspect_ratio      = "16:9"
+
+[hotkeys]
+rewind_pad = 1272
+save_state_menu_pad = 2040
+fast_forward_speed = 4
+fast_forward_mode = "hold"
+fast_forward_pad = 1528
+fast_forward_toggle_pad = 0
+
+[launcher]
+skip_launcher = false
+
+[disc]
+path = "disc/SilentHill.cue"
+
+[memcard]
+dir     = "saves"
+card1   = "saves/card1.mcd"
+card2   = "saves/card2.mcd"
+enable1 = true
+enable2 = true
+
+[controller]
+default_mode = "analog"
+p1_mode   = "analog"
+p1_deadzone = 3276
+multitap  = true
+multitap_analog = true
+deadzone  = 3276
+
+[localization]
+language = "es"

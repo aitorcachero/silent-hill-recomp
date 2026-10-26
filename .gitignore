@@ -56,3 +56,9 @@ pc_port/launcher/**/bin/
 # pc_port/docs/Render_Backends.md for where to get a build (and which builds
 # actually contain the Vulkan backend).
 pc_port/angle/
+
+# Copyrighted disc images and binaries
+disc/
+build-release/
+saves/
+*.exe
