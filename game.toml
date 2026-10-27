@@ -79,7 +79,7 @@ auto_ui_squash = false
 hud_sprt_squash = false
 
 [audio]
-buffer_ms = 60
+buffer_ms = 180
 spu_hq = true
 
 [controller]

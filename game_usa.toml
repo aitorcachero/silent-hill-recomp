@@ -3,7 +3,7 @@ name = "SilentHill"
 id = "SLUS-00707"
 players = 1
 exe = "disc/SLUS_007.07"
-disc = "disc/SilentHill_USA.cue"
+disc = "disc/SilentHill.cue"
 load_address = "0x80010000"
 entry_pc = "0x80012F7C"
 text_size = "0x00013000"
@@ -11,8 +11,8 @@ stack_base = "0x801FFFF0"
 
 [prepare_disc]
 out_dir = "disc"
-bin_name = "Silent Hill (USA).bin"
-cue_name = "Silent Hill (USA).cue"
+bin_name = "SilentHill.bin"
+cue_name = "SilentHill.cue"
 boot_exe = "SLUS_007.07"
 known_sizes = [616496832, 616494480]
 known_md5 = [
@@ -75,7 +75,7 @@ auto_ui_squash = false
 hud_sprt_squash = false
 
 [audio]
-buffer_ms = 60
+buffer_ms = 180
 spu_hq = true
 
 [controller]

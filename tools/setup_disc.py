@@ -4,7 +4,7 @@ Silent Hill Recompiled — Detector y Preparador Universal de Disco
 Soporte completo:
   - PAL España (SLES-01514 en castellano)
   - PAL Europa (SCES-01514 inglés)
-  - NTSC-U USA (SLUS-00707 v1.0 / v1.1)
+  - NTSC-U USA / Doblaje al Castellano (SLUS-00707 v1.0 / v1.1)
   - NTSC-J Japón (SLPM-86192 original / Konami The Best SLPM-86641 / PSone Books SLPM-87328)
 Formatos: .PBP, .BIN/.CUE, .ISO, .IMG, .CHD
 """
@@ -15,6 +15,7 @@ import struct
 import zlib
 import re
 import shutil
+import subprocess
 from pathlib import Path
 
 KNOWN_VERSIONS = {
@@ -36,10 +37,10 @@ KNOWN_VERSIONS = {
     },
     "SLUS_007.07": {
         "serial": "SLUS-00707",
-        "title": "Silent Hill (USA - English v1.0/v1.1)",
+        "title": "Silent Hill (USA / Doblaje Castellano)",
         "region": "NTSC-U",
         "hz": 59.94,
-        "lang": "en",
+        "lang": "es",
         "boot_exe": "SLUS_007.07"
     },
     "SLPM_861.92": {
@@ -157,15 +158,86 @@ def write_cue(cue_path: Path, bin_name: str):
         f.write(cue_content)
     print(f"[+] Generado descriptor CUE: {cue_path.name}")
 
+def extract_exe_from_iso(bin_path: Path, out_path: Path, exe_name: str):
+    if out_path.exists() and out_path.stat().st_size > 0:
+        return True
+    try:
+        # Intentar con sectores de 2352 (RAW/BIN) y 2048 (ISO estandar)
+        for sector_size in [2352, 2048]:
+            try:
+                with open(bin_path, "rb") as f:
+                    header_candidates = [24, 16] if sector_size == 2352 else [0]
+                    pvd = None
+                    header_size = 0
+                    for hs in header_candidates:
+                        f.seek(16 * sector_size + hs)
+                        block = f.read(2048)
+                        if block[1:6] == b"CD001":
+                            pvd = block
+                            header_size = hs
+                            break
+                    if not pvd:
+                        continue
+                    root_rec = pvd[156:156+34]
+                    root_lba = struct.unpack("<I", root_rec[2:6])[0]
+                    root_len = struct.unpack("<I", root_rec[10:14])[0]
+                    f.seek(root_lba * sector_size + header_size)
+                    dir_data = f.read(root_len)
+                    pos = 0
+                    while pos < len(dir_data):
+                        rec_len = dir_data[pos]
+                        if rec_len == 0:
+                            pos = (pos + 2048) & ~2047
+                            continue
+                        rec = dir_data[pos:pos+rec_len]
+                        lba = struct.unpack("<I", rec[2:6])[0]
+                        size = struct.unpack("<I", rec[10:14])[0]
+                        name_len = rec[32]
+                        name = rec[33:33+name_len].decode("latin1", "ignore")
+                        if exe_name.lower() in name.lower():
+                            f.seek(lba * sector_size)
+                            out_bytes = bytearray()
+                            remaining = size
+                            while remaining > 0:
+                                sec = f.read(sector_size)
+                                take = min(remaining, 2048)
+                                out_bytes.extend(sec[header_size:header_size+take])
+                                remaining -= take
+                            out_path.write_bytes(out_bytes)
+                            print(f"[+] Extraido binario ejecutable de PS1: {out_path.name} ({len(out_bytes)} bytes)")
+                            return True
+                        pos += rec_len
+            except Exception:
+                continue
+    except Exception as e:
+        print(f"[!] Advertencia extrayendo ejecutable: {e}")
+    return False
+
 def update_configs(project_root: Path, cue_path: Path, serial: str, version_info: dict):
     cue_forward = str(cue_path.resolve()).replace("\\", "/")
     region = version_info.get("region", "PAL")
     is_pal = region == "PAL"
     
+    # Marcador de region para el launcher
+    disc_dir = project_root / "disc"
+    tag_usa = disc_dir / "variant_usa.tag"
+    tag_pal = disc_dir / "variant_pal.tag"
+    if not is_pal:
+        tag_usa.write_text("USA\n", encoding="utf-8")
+        if tag_pal.exists(): tag_pal.unlink()
+        print("[+] Marcador de variante activado: USA / Doblaje Castellano (SLUS-00707)")
+    else:
+        tag_pal.write_text("PAL\n", encoding="utf-8")
+        if tag_usa.exists(): tag_usa.unlink()
+        print("[+] Marcador de variante activado: PAL España / Europa (SLES-01514)")
+    
     # Escribir disc.cfg
     for d in [project_root, project_root / "build-release"]:
         if d.exists():
             (d / "disc.cfg").write_text(cue_forward + "\n", encoding="utf-8")
+            if not is_pal:
+                (d / "disc" / "variant_usa.tag").parent.mkdir(parents=True, exist_ok=True)
+                (d / "disc" / "variant_usa.tag").write_text("USA\n", encoding="utf-8")
             
     # Actualizar settings.toml
     for d in [project_root, project_root / "build-release"]:
@@ -175,20 +247,10 @@ def update_configs(project_root: Path, cue_path: Path, serial: str, version_info
             txt = re.sub(r'path\s*=\s*"[^"]*"', f'path = "{cue_forward}"', txt)
             st.write_text(txt, encoding="utf-8")
 
-    cfg_file = project_root / "pc_port" / "config.cfg"
-    if cfg_file.exists():
-        text = cfg_file.read_text(encoding="utf-8", errors="replace")
-        if is_pal:
-            text = re.sub(r'refresh_rate\s*=\s*\d+', 'refresh_rate = 50', text)
-        else:
-            text = re.sub(r'refresh_rate\s*=\s*\d+', 'refresh_rate = 60', text)
-        cfg_file.write_text(text, encoding="utf-8")
-        print(f"[+] Actualizado config.cfg -> Tasa de refresco ajustada a {'50 Hz (PAL)' if is_pal else '60 Hz (NTSC)'}")
-
 def main():
     print("=" * 65)
     print("  Silent Hill Recompiled — Detector y Preparador Universal")
-    print("  Soporte Completo: PAL (España/Castellano, UK), NTSC-U, NTSC-J")
+    print("  Soporte Completo: PAL (España/Castellano, UK), NTSC-U / Doblaje")
     print("=" * 65)
 
     base_dir = Path(__file__).resolve().parent.parent
@@ -202,7 +264,7 @@ def main():
             target_file = cand
 
     if not target_file:
-        extensions = [".pbp", ".cue", ".bin", ".iso", ".img", ".chd"]
+        extensions = [".chd", ".pbp", ".cue", ".bin", ".iso", ".img"]
         search_dirs = [disc_dir, base_dir, base_dir / "pc_port"]
         
         candidates = []
@@ -224,7 +286,7 @@ def main():
 
     if not target_file:
         print("\n[!] No se encontro ninguna imagen de disco en la carpeta.")
-        print("    Por favor, coloca tu copia de Silent Hill (.PBP, .ISO, .BIN, .CUE, .CHD)")
+        print("    Por favor, coloca tu copia de Silent Hill (.CHD, .PBP, .ISO, .BIN, .CUE)")
         print(f"    en: {disc_dir} o en la raiz del proyecto y vuelve a ejecutar este script.")
         input("\nPulsa Enter para salir...")
         sys.exit(1)
@@ -235,7 +297,21 @@ def main():
     cue_file = disc_dir / "SilentHill.cue"
 
     suf = target_file.suffix.lower()
-    if suf == ".pbp":
+    if suf == ".chd":
+        print(f"[*] Descomprimiendo imagen CHD: {target_file.name}...")
+        chdman = None
+        for cand_chdman in [base_dir / "tools" / "chdman.exe", base_dir.parent / "tools" / "chdman.exe"]:
+            if cand_chdman.exists():
+                chdman = cand_chdman
+                break
+        if chdman:
+            cmd = [str(chdman), "extractcd", "-i", str(target_file), "-o", str(cue_file), "-ob", str(bin_file)]
+            subprocess.run(cmd, check=True)
+            print(f"[+] CHD extraido exitosamente a: {bin_file.name}")
+        else:
+            print("[!] Error: No se encontro chdman.exe para descomprimir el CHD.")
+            sys.exit(1)
+    elif suf == ".pbp":
         ok = extract_pbp(target_file, bin_file)
         if not ok:
             sys.exit(1)
@@ -274,9 +350,12 @@ def main():
     print(f"  Region de video:      {version_info['region']} ({version_info['hz']} Hz)")
     print("-" * 65)
 
+    # Extraer el binario ejecutable de arranque si es necesario
+    extract_exe_from_iso(bin_file, disc_dir / version_info["boot_exe"], version_info["boot_exe"])
+
     update_configs(base_dir, cue_file, version_info["serial"], version_info)
     print("\n[OK] Configuracion completada con exito.")
-    print("    El juego esta listo para iniciarse con JUGAR_SILENT_HILL.bat.")
+    print("    El juego esta listo para iniciarse con JUGAR_SILENT_HILL.bat o SilentHill.exe.")
 
 if __name__ == "__main__":
     main()
