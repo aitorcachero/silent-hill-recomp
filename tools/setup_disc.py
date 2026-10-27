@@ -160,7 +160,13 @@ def write_cue(cue_path: Path, bin_name: str):
 
 def extract_exe_from_iso(bin_path: Path, out_path: Path, exe_name: str):
     if out_path.exists() and out_path.stat().st_size > 0:
-        return True
+        try:
+            with open(out_path, "rb") as f_chk:
+                chk_hdr = f_chk.read(2048 + 4)
+            if chk_hdr[:8] == b"PS-X EXE" and len(chk_hdr) >= 2052 and chk_hdr[2048:2052] != b"\x8c\x49\x28\x85":
+                return True
+        except Exception:
+            pass
     try:
         # Intentar con sectores de 2352 (RAW/BIN) y 2048 (ISO estandar)
         for sector_size in [2352, 2048]:

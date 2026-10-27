@@ -6,7 +6,7 @@ exe = "disc/SLUS_007.07"
 disc = "disc/SilentHill.cue"
 load_address = "0x80010000"
 entry_pc = "0x80012F7C"
-text_size = "0x00013000"
+text_size = "0x00013800"
 stack_base = "0x801FFFF0"
 
 [prepare_disc]
