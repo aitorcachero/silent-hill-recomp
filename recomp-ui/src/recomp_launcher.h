@@ -1593,7 +1593,9 @@ struct RecompLauncherCSettings {
      * row.) */
     /* Used only by hosts declaring assist_fast_forward_divisor > 1. */
     int  fast_forward_toggle_mode;
+    int  freeze_heartbeat;
 };
+#define RECOMP_LAUNCHER_HAS_FREEZE_HEARTBEAT 1
 #define RECOMP_LAUNCHER_HAS_ZAPPER_SETTINGS 1
 
 /* Largest run-ahead depth the launcher will offer for

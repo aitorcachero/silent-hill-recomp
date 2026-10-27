@@ -12757,6 +12757,14 @@ void draw_footer(LauncherModel* m, const LauncherTheme& th, float footer_h) {
         ImGui::SetCursorScreenPos(ImVec2(origin.x, cta_y + (play_h - ImGui::GetFrameHeight()) * 0.5f));
         if (ImGui::Checkbox(ui_text("Skip launcher on boot"), &skip))
             launcher_model_request_skip_toggle(m);
+        ImGui::SameLine(0, px(16.0f));
+        bool hb = m->s.freeze_heartbeat != 0;
+        if (ImGui::Checkbox(ui_text("Heartbeat diagnostics"), &hb)) {
+            m->s.freeze_heartbeat = hb ? 1 : 0;
+        }
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("%s", ui_text("Logs runtime stats to psx_freeze_heartbeat.json to diagnose freezes (disabled by default)"));
+        }
     } else if (m->view == LNG_VIEW_SETTINGS &&
                launcher_model_can_restore_defaults(m)) {
         ImGui::SetCursorScreenPos(
